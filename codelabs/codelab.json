@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-16T09:54:31Z",
+  "id": "01-first-container-interaction",
+  "duration": 17,
+  "title": "Understanding and Managing Containers",
+  "authors": "Pius Lawal",
+  "summary": "Introduction to containers",
+  "source": "codelabs/1-first-container-interaction/01-first-container-interaction.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "docker"
+  ],
+  "tags": [
+    "ckad",
+    "container",
+    "docker",
+    "web"
+  ],
+  "url": "01-first-container-interaction"
+}

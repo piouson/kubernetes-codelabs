@@ -1,0 +1,393 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Understanding and Managing Containers</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="01-first-container-interaction"
+                  title="Understanding and Managing Containers"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Requirements" duration="0">
+        <p>A Unix-based environment running Docker is required to complete this CodeLab!</p>
+<h2 is-upgraded>macOS users</h2>
+<p>Docker install steps for macOS</p>
+<pre><code language="language-sh" class="language-sh"># 1. install xcode tools
+sudo xcode-select --install
+# 2. install homebrew
+/bin/bash -c &#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&#34;
+# 3. install docker
+brew install --cask docker
+</code></pre>
+<h2 is-upgraded>Windows users</h2>
+<p>💡 We recommend all Windows users follow the next section to install Docker Engine instead. However, for a quick test for explorers, you can follow the Docker Desktop install steps below.</p>
+<p>   Docker Desktop install steps for Windows</p>
+<pre><code language="language-sh" class="language-sh"># powershell as administrator
+# 1. install wsl2
+wsl --install
+# 2. install terminal
+winget install Microsoft.WindowsTerminal
+# 3. install docker
+winget install Docker.DockerDesktop
+# restart device
+</code></pre>
+<p>After device restart:</p>
+<ol type="1">
+<li>Complete Ubuntu user setup - Ubuntu terminal should auto-open</li>
+<li>Enable <code>systemd</code> in Ubuntu<pre><code language="language-sh" class="language-sh">sudo nano /etc/wsl.conf
+</code></pre>
+<pre><code language="language-sh" class="language-sh"># /etc/wsl.conf
+[boot]
+systemd=true
+</code></pre>
+For more details on <code>systemd</code> support, visit <a href="https://aka.ms/wslsystemd" target="_blank">aka.ms/wslsystemd</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/wsl/media/docker-dashboard.png" target="_blank"><paper-button class="colored" raised>Enable Docker Desktop integration with WSL2 Ubuntu</paper-button></a></li>
+<li><a href="https://user-images.githubusercontent.com/17856665/192830999-f8f9c5af-8b4e-41c4-8f5e-c9c159fcf9ca.png" target="_blank"><paper-button class="colored" raised>Open Terminal and switch to Ubuntu</paper-button></a></li>
+<li><a href="https://user-images.githubusercontent.com/17856665/192833271-5a3170a0-caf6-45bf-b378-ac6eb1f2dfbc.png" target="_blank"><paper-button class="colored" raised>Make Ubuntu your default Terminal profile</paper-button></a></li>
+<li>Perform Internet connection test in WSL2 by running:<pre><code language="language-sh" class="language-sh">curl google.com
+</code></pre>
+</li>
+<li>If Internet connection test fails with <code>Could not resolve host</code>, and you have a VPN program installed, use the <em>WSL2 VPN fix</em> below   WSL2 VPN fix<pre><code language="language-sh" class="language-sh"># powershell as administrator
+# 1. download vpnkit
+wget -o wsl-vpnkit.tar.gz https://github.com/sakai135/wsl-vpnkit/releases/latest/download/wsl-vpnkit.tar.gz
+# 2. add vpnkit as linux distro
+wsl --import wsl-vpnkit $env:USERPROFILE\wsl-vpnkit wsl-vpnkit.tar.gz --version 2
+wsl -d wsl-vpnkit
+# 3. switch to wsl2 ubuntu terminal
+wsl
+# 4. create an alias `vpnkit`
+printf &#39;# vpnkit - fix vpn network issues\nalias vpnkit=&#34;wsl.exe -d wsl-vpnkit service wsl-vpnkit&#34;&#39; &gt;&gt; ~/.bashrc
+# 5. load the new alias
+exec bash
+# 6. start the vpnkit
+vpnkit start
+# 7. test internet connection again
+curl google.com
+# note that you can stop the fix with `vpnkit stop`, see https://github.com/sakai135/wsl-vpnkit
+</code></pre>
+</li>
+</ol>
+<h2 is-upgraded>Linux and Windows WSL2 users</h2>
+<p>Docker Engine install steps for Linux</p>
+<p>Please follow the <a href="https://docs.docker.com/engine/install/" target="_blank">official Docker Engine install steps for your distro</a>, this is also an alternative for Windows users running WSL2.</p>
+<p>💡 If using WSL2, be sure to:</p>
+<ol type="1">
+<li>Enable <code>systemd</code> - see the <em>Windows users</em> section</li>
+<li><a href="https://docs.microsoft.com/en-us/windows/wsl/media/docker-dashboard.png" target="_blank">Disable Docker Desktop integration with WSL2</a></li>
+</ol>
+<pre><code language="language-sh" class="language-sh"># 1. uninstall old docker versions
+sudo apt-get remove docker docker-engine docker.io containerd runc
+# 2. setup docker repository
+sudo apt-get update
+sudo apt-get -y install ca-certificates curl gnupg lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo &#34;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&#34; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+# 3. install docker engine
+sudo apt-get update
+sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+# 4. manage docker as non-root user
+sudo groupadd docker
+sudo usermod -aG docker $USER
+# 5. start a new terminal to update group membership
+docker run hello-world
+</code></pre>
+<p>💡 WSL users please see <a href="#windows-users" target="_blank">Step 6 - Docker Desktop install steps for Windows</a> for Internet connection test.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Container Overview" duration="5">
+        <p>A <a href="https://www.docker.com/resources/what-container/" target="_blank">container</a> is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A <a href="https://opensource.com/article/21/9/container-runtimes" target="_blank">container runtime (or container engine)</a> is required to run a container.</p>
+<p><a href="https://www.docker.com/" target="_blank">Docker</a> is the most popular tool for creating containers, and its container runtime is called <a href="https://www.docker.com/products/container-runtime/" target="_blank">Docker Engine</a>, which uses <a href="https://containerd.io/" target="_blank">containerd</a> under the hood.</p>
+<p><a href="https://podman.io/" target="_blank">Podman</a> is another popular tool for creating containers. However, there are <a href="https://www.aquasec.com/cloud-native-academy/container-platforms/container-platforms-6-best-practices-and-15-top-solutions/" target="_blank">other tools for creating containers</a> as well as <a href="https://www.aquasec.com/cloud-native-academy/container-security/container-runtime/" target="_blank">other container runtimes</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="First Container Interaction" duration="6">
+        <ol type="1">
+<li>Confirm the statuses of Docker client and Docker server: <pre><code language="language-sh" class="language-sh">docker info
+</code></pre>
+</li>
+<li>Confirm Docker works correctly by running the <code>hello-world</code> container: <pre><code language="language-sh" class="language-sh">docker run hello-world
+</code></pre>
+</li>
+<li>Explore Docker&#39;s <em>Top-Level</em> Help command: <pre><code language="language-sh" class="language-sh">docker --help | less
+</code></pre>
+<ul>
+<li>Review the description of the following <em>Common Commands</em>: <code>run</code>, <code>exec</code>, <code>ps</code>, <code>images</code>, and <code>info</code></li>
+<li>Can you say what these common commands are used for?</li>
+</ul>
+  <google-codelab-survey survey-id="01-first-container-interaction-1">
+<h4>What does "docker run" do?</h4>
+<paper-radio-group>
+<paper-radio-button>Display system-wide information</paper-radio-button>
+<paper-radio-button>Create and run a new container from an image</paper-radio-button>
+<paper-radio-button>List images</paper-radio-button>
+<paper-radio-button>List containers</paper-radio-button>
+<paper-radio-button>Execute a command in a running container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-2">
+<h4>What does "docker exec" do?</h4>
+<paper-radio-group>
+<paper-radio-button>Display system-wide information</paper-radio-button>
+<paper-radio-button>Create and run a new container from an image</paper-radio-button>
+<paper-radio-button>List images</paper-radio-button>
+<paper-radio-button>List containers</paper-radio-button>
+<paper-radio-button>Execute a command in a running container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-3">
+<h4>What does "docker ps" do?</h4>
+<paper-radio-group>
+<paper-radio-button>Display system-wide information</paper-radio-button>
+<paper-radio-button>Create and run a new container from an image</paper-radio-button>
+<paper-radio-button>List images</paper-radio-button>
+<paper-radio-button>List containers</paper-radio-button>
+<paper-radio-button>Execute a command in a running container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-4">
+<h4>What does "docker images" do?</h4>
+<paper-radio-group>
+<paper-radio-button>Display system-wide information</paper-radio-button>
+<paper-radio-button>Create and run a new container from an image</paper-radio-button>
+<paper-radio-button>List images</paper-radio-button>
+<paper-radio-button>List containers</paper-radio-button>
+<paper-radio-button>Execute a command in a running container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-5">
+<h4>What does "docker info" do?</h4>
+<paper-radio-group>
+<paper-radio-button>Display system-wide information</paper-radio-button>
+<paper-radio-button>Create and run a new container from an image</paper-radio-button>
+<paper-radio-button>List images</paper-radio-button>
+<paper-radio-button>List containers</paper-radio-button>
+<paper-radio-button>Execute a command in a running container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>Explore the Help command for <code>docker run</code>: <pre><code language="language-sh" class="language-sh">docker run --help | less
+</code></pre>
+<ul>
+<li>Find the <em>Options</em> to perform the following: <ul>
+<li>Run container in background and print container ID?</li>
+<li>Set environment variables?</li>
+<li>Keep STDIN open even if not attached?</li>
+<li>Assign a name to the container?</li>
+<li>Automatically remove the container when it exits?</li>
+<li>Allocate a pseudo-TTY?</li>
+<li>Bind mount a volume?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Review the kernel details of your host device: <pre><code language="language-sh" class="language-sh">uname -r
+sysctl -a --pattern kernel | less # for examples, run `man sysctl`
+sysctl -a --pattern kernel.os
+</code></pre>
+</li>
+<li>Review the processes running on your device: <pre><code language="language-sh" class="language-sh">ps aux | less # see `man ps`
+</code></pre>
+<ul>
+<li>You should see a long list running processes</li>
+</ul>
+</li>
+<li>Run a container image called <code>busybox</code> in <em>interactive</em> mode: <ul>
+<li>Interactive mode allows you to run commands directly inside the container</li>
+</ul>
+<pre><code language="language-sh" class="language-sh">docker run -it busybox
+</code></pre>
+<google-codelab-survey survey-id="01-first-container-interaction-6">
+<h4>Compare the processes running on the container to those on your device?</h4>
+<paper-radio-group>
+<paper-radio-button>Slightly more processes running on the container</paper-radio-button>
+<paper-radio-button>Significantly more processes running on the container</paper-radio-button>
+<paper-radio-button>Slightly less processes running on the container</paper-radio-button>
+<paper-radio-button>Significantly less processes running on the container</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-7">
+<h4>Compare the kernel details of the container to that of your device?</h4>
+<paper-radio-group>
+<paper-radio-button>The container uses the same kernel as my host device</paper-radio-button>
+<paper-radio-button>The container uses a different kernel to my host device</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>Exit the container: <pre>exit
+</pre>
+</li>
+<li>Run the <em>Common Command</em> that &#34;<em>Lists containers</em>&#34; and review the output <ul>
+<li>You do not need to add any <em>Options</em></li>
+<li>If you don&#39;t remember the command, see <em>step [3]</em></li>
+</ul>
+  <google-codelab-survey survey-id="01-first-container-interaction-8">
+<h4>Did you see any containers?</h4>
+<paper-radio-group>
+<paper-radio-button>Yes</paper-radio-button>
+<paper-radio-button>No</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+</ol>
+<h2 is-upgraded>Solutions: First container interaction</h2>
+<pre><code language="language-sh" class="language-sh">docker info
+docker run hello-world
+docker --help | less
+docker run --help | less
+uname -r
+sysctl -a --pattern kernel | less # for examples, run `man sysctl`
+sysctl -a --pattern kernel.os
+ps aux | less # see `man ps`
+docker run -it busybox
+ps aux # run inside container
+sysctl -a --pattern kernel.os # run inside container
+exit
+docker ps
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Help to the Rescue" duration="6">
+        <p>Help commands mean a lot to developers! Learning how to navigate help commands and official documentations will save you time and effort down the road. You will begin to build your help-command confidence with this lab.</p>
+<ol type="1">
+<li>Let&#39;s explore the help command below: <pre><code language="language-sh" class="language-sh">docker ps --help | less
+</code></pre>
+<google-codelab-survey survey-id="01-first-container-interaction-9">
+<h4>What is the Option "-a" or "--all" used for?</h4>
+<paper-radio-group>
+<paper-radio-button>List stopped containers</paper-radio-button>
+<paper-radio-button>List running containers</paper-radio-button>
+<paper-radio-button>List all containers</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+  <google-codelab-survey survey-id="01-first-container-interaction-10">
+<h4>What is the result when the "-a" Option is not used?</h4>
+<paper-radio-group>
+<paper-radio-button>List stopped containers</paper-radio-button>
+<paper-radio-button>List running containers</paper-radio-button>
+<paper-radio-button>List all containers</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>List all containers (both running and not running)  <google-codelab-survey survey-id="01-first-container-interaction-11">
+<h4>Was the "busybox" container still running or stopped after exit?</h4>
+<paper-radio-group>
+<paper-radio-button>Stopped</paper-radio-button>
+<paper-radio-button>Running</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>Create another <code>busybox</code> container in <em>interactive</em> mode, just like you did in <em>step [7]</em></li>
+<li>Try to exit the container without stopping it <ul>
+<li>To exit without stopping a container, press <code>CTRL+P</code> followed by <code>CTRL+Q</code></li>
+</ul>
+</li>
+<li>List only running containers  <google-codelab-survey survey-id="01-first-container-interaction-12">
+<h4>Did you successfully exit the container without stopping it?</h4>
+<paper-radio-group>
+<paper-radio-button>Yes</paper-radio-button>
+<paper-radio-button>No</paper-radio-button>
+<paper-radio-button>Did not work</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>Now list all containers  <google-codelab-survey survey-id="01-first-container-interaction-13">
+<h4>How many containers have you created so far?</h4>
+<paper-radio-group>
+<paper-radio-button>1</paper-radio-button>
+<paper-radio-button>2</paper-radio-button>
+<paper-radio-button>3</paper-radio-button>
+<paper-radio-button>4</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>It&#39;s time to cleanup, why don&#39;t you explore the top-level help command again - if you don&#39;t remember, see <a href="#first-container-interaction" target="_blank">_step [3] of the previous step_</a>  <google-codelab-survey survey-id="01-first-container-interaction-14">
+<h4>What _Management Command_ is used to manage containers?</h4>
+<paper-radio-group>
+<paper-radio-button>docker ps</paper-radio-button>
+<paper-radio-button>docker run</paper-radio-button>
+<paper-radio-button>docker container</paper-radio-button>
+<paper-radio-button>docker info</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+</li>
+<li>Explore the help command for the <em>Management Command</em> you found in the previous <em>step [7]</em></li>
+<li>Can you determine the commands that perform these actions: <ul>
+<li>Attach local standard input, output, and error streams to a running container?</li>
+<li>Copy files/folders between a container and the local filesystem?</li>
+<li>Create a new container?</li>
+<li>Execute a command in a running container?</li>
+<li>Display detailed information on one or more containers?</li>
+<li>Fetch the logs of a container?</li>
+<li>List containers?</li>
+<li>List port mappings or a specific mapping for the container?</li>
+<li>Remove all stopped containers?</li>
+<li>Rename a container?</li>
+<li>Restart one or more containers?</li>
+<li>Remove one or more containers?</li>
+<li>Create and run a new container from an image?</li>
+<li>Start one or more stopped containers?</li>
+<li>Stop one or more running containers?</li>
+<li>Display the running processes of a container?</li>
+</ul>
+</li>
+<li>Remove all the containers you&#39;ve created so far by using the command for <em>Remove one or more containers</em><ul>
+<li>You may also require the command to <em>Stop one or more running containers</em></li>
+</ul>
+</li>
+<li>Do you know the difference between <code>docker run</code> and <code>docker start</code>?  <aside class="special"><p><code>docker run</code> <strong>= </strong><code>docker create</code> <strong>+ </strong><code>docker start</code> <strong>+ </strong><code>docker attach</code>  </p>
+</aside>
+</li>
+</ol>
+<h2 is-upgraded>Solutions: Help to the rescue</h2>
+<pre><code language="language-sh" class="language-sh">docker ps --help | less
+docker ps -a
+docker run -it busybox
+# ctrl+p ctrl+q
+docker ps
+docker ps -a
+docker --help | less
+docker container --help | less
+docker ps # shows container ids
+docker container stop $CONTAINER_ID # stop any running containers
+docker rm $CONTAINER_ID1 $CONTAINER_ID2 $CONTAINER_ID3 etc
+</code></pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
