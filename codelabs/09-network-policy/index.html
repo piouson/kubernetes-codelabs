@@ -1,0 +1,76 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Tasks: Ingress and Network Policy</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="../../claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script async src="../../scripts/code-block-copy.js"></script>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="09-network-policy"
+                  title="Tasks: Ingress and Network Policy"
+                  environment="web"
+                  feedback-link="https://github.com/piouson/kubernetes-bootcamp/discussions">
+    
+      <google-codelab-step label="Task - Ingress" duration="30">
+        <h2 is-upgraded>Scenario</h2>
+<p>An intern, who looks up to you as a role model, has messaged you for help after struggling with Kubernetes for a few days:</p>
+<aside class="special"><p> I created a <code>bat</code> namespace and done everything in there, but still cannot access the app locally at <code>http://ckad-bootcamp.local</code>. I think I messed up the ingress configuration, please stop by when you have time, I could use a hand! </p>
+</aside>
+<h2 is-upgraded>Goal</h2>
+<p>Curious, you decided to connect remotely to the cluster the intern was working on, to figure out what the intern had been up to, and show the intern what a true role model you are!</p>
+<p>Resolve the intern&#39;s issue without creating any new resources and without leaving your desk! You may create a temporary pod to test connectivity.</p>
+<h3 is-upgraded>Setup environment</h3>
+<pre><code language="language-sh" class="language-sh">curl -s https://raw.githubusercontent.com/piouson/kubernetes-codelabs/main/lab-files/task-09-ingress-create.sh | bash
+</code></pre>
+<h3 is-upgraded>Destroy environment</h3>
+<pre><code language="language-sh" class="language-sh">curl -s https://raw.githubusercontent.com/piouson/kubernetes-codelabs/main/lab-files/task-09-ingress-destroy.sh | bash
+</code></pre>
+<h3 is-upgraded>Hints</h3>
+<details>
+<summary>Click to reveal hints</summary>
+<p>The rest of the hints will be revealed on Tues, 11 Apr 2023. 😎</p>
+<details>
+<summary>Namespace (1/18)</summary>
+<p>Have you confirmed the Namespace and resources in it?</p>
+</details>
+<details>
+<summary>Ingress I (2/18)</summary>
+<p>Does an Ingress resource exist in the Namespace?</p>
+</details>
+</details>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Task - Network Policy" duration="0">
+        
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="../../claat-public/native-shim.js"></script>
+  <script src="../../claat-public/custom-elements.min.js"></script>
+  <script src="../../claat-public/prettify.js"></script>
+  <script src="../../claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

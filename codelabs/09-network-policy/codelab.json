@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-27T13:53:29+01:00",
+  "id": "09-network-policy",
+  "duration": 30,
+  "title": "Tasks: Ingress and Network Policy",
+  "authors": "Pius Lawal",
+  "summary": "Task - Network Policy",
+  "source": "codelabs/09-ingress-network-policy/09-ingress-network-policy.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "kubernetes"
+  ],
+  "tags": [
+    "ckad",
+    "kubernetes"
+  ],
+  "feedback": "https://github.com/piouson/kubernetes-bootcamp/discussions",
+  "url": "09-network-policy"
+}
