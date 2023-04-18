@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-04-18T14:00:54+01:00",
+  "id": "09-network-policy",
+  "duration": 24,
+  "title": "CKAD Exam Readiness Tasks",
+  "authors": "Pius Lawal",
+  "summary": "CKAD Exam Readiness Tasks - simulate the exam by completing all 15+ Tasks in under 2 hours",
+  "source": "codelabs/ckad-tasks/ckad-tasks.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "kubernetes"
+  ],
+  "tags": [
+    "ckad-task",
+    "task"
+  ],
+  "feedback": "https://github.com/piouson/kubernetes-bootcamp/discussions",
+  "url": "09-network-policy"
+}

@@ -1,0 +1,28 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-29T08:04:06+01:00",
+  "id": "01-first-container-interaction",
+  "duration": 17,
+  "title": "Understanding and Managing Containers",
+  "authors": "Pius Lawal",
+  "summary": "Introduction to containers",
+  "source": "codelabs/01-first-container-interaction/01-first-container-interaction.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "docker"
+  ],
+  "tags": [
+    "ckad",
+    "container",
+    "docker",
+    "web"
+  ],
+  "feedback": "https://github.com/piouson/kubernetes-bootcamp/discussions",
+  "url": "01-first-container-interaction"
+}
